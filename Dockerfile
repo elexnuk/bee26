@@ -30,6 +30,9 @@ FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app/ .
 
+RUN chmod 0766 -R /usr/src/app/
+RUN chown bun:bun -R /usr/src/app/
+
 # run the app
 USER bun
 ENTRYPOINT [ "bun", "run", "src/index.ts" ]

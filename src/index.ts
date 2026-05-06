@@ -39,8 +39,7 @@ commands.set(votedCommand.name, handleVotedCommand);
 client.once(Events.ClientReady, (readyClient) => {
   console.log("Logged in to discord as", readyClient.user.tag);
   client.user?.setActivity({
-    type: ActivityType.Watching,
-    name: "incoming results",
+    name: "Watching incoming results | Run /channel to set result feed.",
   });
 });
 

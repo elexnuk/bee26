@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     env_file: ".env.local"
     volumes:
-      - ./elexn.db:/usr/src/app/elexn.db:rw
+      - ./elexn.db:/usr/src/app/elexn.db
 
 networks:
   default:
