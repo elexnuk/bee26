@@ -1,0 +1,130 @@
+import {
+  SlashCommandBuilder,
+  ContextMenuCommandBuilder,
+  ApplicationCommandType,
+  TextInputBuilder,
+  ModalBuilder,
+  LabelBuilder,
+  TextInputStyle,
+  type Interaction,
+  MessageContextMenuCommandInteraction,
+  ChatInputCommandInteraction,
+  ModalSubmitInteraction,
+  UserContextMenuCommandInteraction,
+  MessageFlags,
+} from "discord.js";
+
+const guildID = process.env.MAIN_SERVER_ID;
+const channelID = process.env.MAIN_FEEDBACK_CHANNEL_ID;
+
+export const slashCommand = new SlashCommandBuilder()
+  .setName("sandra")
+  .setDescription("Speak to Sandra");
+
+export const messageCommand = new ContextMenuCommandBuilder()
+  .setName("Speak to Sandra")
+  .setType(ApplicationCommandType.Message);
+
+export const userCommand = new ContextMenuCommandBuilder()
+  .setName("Speak to Sandra")
+  .setType(ApplicationCommandType.User);
+
+const usernameInput = new TextInputBuilder()
+  .setCustomId("sandra_username")
+  .setRequired(false)
+  .setPlaceholder("Anonymous Discord User")
+  .setStyle(TextInputStyle.Short);
+
+const messageInput = new TextInputBuilder()
+  .setCustomId("sandra_message")
+  .setRequired(true)
+  .setPlaceholder("Dear Sandra, I have a question about the BEcord server...")
+  .setStyle(TextInputStyle.Paragraph);
+
+export const sandraModal = new ModalBuilder()
+  .setCustomId("sandra")
+  .setTitle("Feedback Form: Speak to Sandra")
+  .addLabelComponents(
+    new LabelBuilder()
+      .setTextInputComponent(messageInput)
+      .setLabel("Enter your message"),
+    new LabelBuilder()
+      .setTextInputComponent(usernameInput)
+      .setLabel("Optional: Enter a username"),
+  );
+
+function splitTextIntoChunks(text: string): string[] {
+  const chunks = [];
+  let currentChunk = "";
+  const lines = text.split(" ");
+
+  for (const line of lines) {
+    if (currentChunk.length + line.length + 1 <= 2000) {
+      currentChunk += line + " ";
+    } else {
+      chunks.push(currentChunk);
+      currentChunk = line + " ";
+    }
+  }
+
+  if (currentChunk.length > 0) {
+    chunks.push(currentChunk.substring(0, 2000));
+    currentChunk = currentChunk.substring(2000);
+    chunks.push(currentChunk);
+  }
+
+  return chunks;
+}
+
+// Respond with a modal
+export async function showModal(
+  interaction:
+    | MessageContextMenuCommandInteraction
+    | ChatInputCommandInteraction
+    | UserContextMenuCommandInteraction,
+) {
+  if (interaction.guildId != guildID) return;
+
+  await interaction.showModal(sandraModal);
+}
+
+// respond to the modal submit
+export async function handleModalResponse(interaction: ModalSubmitInteraction) {
+  if (!channelID) {
+    return;
+  }
+
+  let username = interaction.fields.getTextInputValue("sandra_username");
+  if (username == "") {
+    username = "[Anonymous User]";
+  }
+
+  const message = interaction.fields.getTextInputValue("sandra_message");
+  if (message == "") {
+    await interaction.reply({
+      content:
+        "Sandra message not submitted. Reason: You must enter a message.",
+      flags: MessageFlags.Ephemeral,
+    });
+    return;
+  }
+
+  const channel = await interaction.client.channels.fetch(channelID);
+
+  let content = `### New Speak To Sandra\n__Username__: ${username}\n__Message__: ${message}`;
+  let chunks = splitTextIntoChunks(content);
+
+  if (!channel || !channel.isSendable()) {
+    console.error("couldn't find suitable feedback channel", content);
+    return;
+  }
+
+  for (let chunk of chunks) {
+    if (chunk == "") continue;
+    await channel.send({ content: chunk });
+  }
+  await interaction.reply({
+    content: "Your message has been sent to Sandra.",
+    flags: MessageFlags.Ephemeral,
+  });
+}
