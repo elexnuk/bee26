@@ -74,6 +74,7 @@ export async function handleSetChannelCommand(
       content: "Set announcement channel to " + channel.toString(),
     });
   } catch (err) {
+    console.error("Error setting channel", err);
     await interaction.reply({
       flags: MessageFlags.Ephemeral,
       content: "Unable to set channel: Error in database operation.",

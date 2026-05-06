@@ -1,0 +1,15 @@
+services:
+  results:
+    image: result_bot
+    build:
+      context: .
+      network: host
+    restart: unless-stopped
+    env_file: ".env.local"
+    volumes:
+      - ./elexn.db:/usr/src/app/elexn.db:rw
+
+networks:
+  default:
+    enable_ipv4: false
+    enable_ipv6: true
