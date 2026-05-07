@@ -147,8 +147,8 @@ function createDiscordMessage(
     }
     output += candidateOutput + "\n";
   });
-
-  let publicUrl = `https://whocanivotefor.co.uk/elections/${ballot.ballot_paper_id}/`;
+  // https://candidates.democracyclub.org.uk/elections/local.halton.norton-north.2026-05-07/
+  let publicUrl = `https://candidates.democracyclub.org.uk/elections/${ballot.ballot_paper_id}/`;
   output += `-# *Democracy Club Data: [${ballot.post.label}, ${ballot.election.name}, ${ballot.election.election_date}](<${publicUrl}>)*`;
 
   return output;
