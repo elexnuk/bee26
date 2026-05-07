@@ -56,6 +56,6 @@ export async function handleVotedCommand(interaction: Interaction) {
 
   // Reply to the user
   await interaction.reply({
-    content: " 🗳️ | " + member + " has voted!",
+    content: " 🗳️ | <@" + member + "> has voted!",
   });
 }
