@@ -61,8 +61,8 @@ export async function runBBC(database: Database, client: Client) {
             await sendToDiscord(
               client,
               database,
-              `## 🚨 ${card.title}: ${currentFlash}
--# *BBC Data: [${card.title}](https://bbc.co.uk${card.href})*`,
+              `## 🚨 BBC Call: ${card.title}: ${currentFlash}
+-# *BBC Data: [${card.title}](https://www.bbc.co.uk${card.href})*`,
             );
           }
         }
