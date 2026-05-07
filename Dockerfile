@@ -35,4 +35,5 @@ RUN chown bun:bun -R /usr/src/app/
 
 # run the app
 USER bun
+ENV NODE_ENV=production
 ENTRYPOINT [ "bun", "run", "src/index.ts" ]
