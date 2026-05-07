@@ -18,6 +18,8 @@ import {
 } from "./commands/set_channel";
 import { handleVotedCommand, votedCommand } from "./commands/server/voted";
 import { handleModalResponse, showModal } from "./commands/server/feedback";
+import { createBBCDatabase } from "./store/bbcflash";
+import { runBBC } from "./jobs/bbc_results";
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -27,6 +29,7 @@ const database = new Database(process.env.DATABASE_PATH, {
 
 createSchema(database);
 createChannelTable(database);
+createBBCDatabase(database);
 
 let commands = new Collection<
   string,
@@ -117,8 +120,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 Bun.cron("* * * * *", async () => {
-  console.log("Test timer firing");
-  await runDC(database, client);
+  console.log("Minute timer firing");
+  await Promise.all([runDC(database, client), runBBC(database, client)]);
 });
 
 // Bun.cron("*/10 * * * 1,2,3", async () => {

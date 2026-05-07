@@ -154,7 +154,7 @@ function createDiscordMessage(
   return output;
 }
 
-async function sendToDiscord(
+export async function sendToDiscord(
   client: Client,
   database: Database,
   message: string,
