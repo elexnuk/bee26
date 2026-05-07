@@ -62,7 +62,7 @@ export async function runBBC(database: Database, client: Client) {
               client,
               database,
               `## 🚨 BBC Call: ${card.title}: ${currentFlash}
--# *BBC Data: https://www.bbc.co.uk${card.href}*`,
+-# *BBC Data: https://www.bbc.co.uk${card.href} *`,
             );
           }
         }
