@@ -16,8 +16,8 @@ export const WinnerFlashSchema = z.object({
   partyName: z.string(),
   flashBold: z.string(),
   flashRegular: z.string(),
-  winnerPartyCode: z.string(),
-  prevWinnerPartyCode: z.string(),
+  winnerPartyCode: z.string().optional(),
+  prevWinnerPartyCode: z.string().optional(),
   explainer: z.any(),
 });
 export type WinnerFlash = z.infer<typeof WinnerFlashSchema>;
