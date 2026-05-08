@@ -154,6 +154,14 @@ function createDiscordMessage(
   return output;
 }
 
+function eqSet<T>(xs: Set<T>, ys: Set<T>): boolean {
+  return xs.size === ys.size && [...xs].every((x) => ys.has(x));
+}
+
+function subset<T>(xs: Set<T>, ys: Set<T>): boolean {
+  return [...xs].every((x) => ys.has(x));
+}
+
 export async function sendToDiscord(
   client: Client,
   database: Database,
@@ -204,7 +212,21 @@ export async function runDC(database: Database, client: Client) {
       let prevWinners = new Set(
         z.array(z.number()).parse(JSON.parse(ballotInfo.winners)),
       );
-      if (candidateIds == prevWinners) {
+      // console.log(
+      //   "prev",
+      //   prevWinners,
+      //   "new",
+      //   candidateIds,
+      //   "equal",
+      //   eqSet(prevWinners, candidateIds),
+      //   "subset",
+      //   subset(candidateIds, prevWinners),
+      // );
+
+      if (
+        eqSet(prevWinners, candidateIds) ||
+        subset(candidateIds, prevWinners)
+      ) {
         console.log("No change in winners for duplicate ballot", ballot);
         continue;
       } else {
