@@ -212,6 +212,7 @@ export async function runDC(database: Database, client: Client) {
       let prevWinners = new Set(
         z.array(z.number()).parse(JSON.parse(ballotInfo.winners)),
       );
+
       // console.log(
       //   "prev",
       //   prevWinners,

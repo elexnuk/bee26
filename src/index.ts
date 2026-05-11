@@ -44,6 +44,11 @@ client.once(Events.ClientReady, (readyClient) => {
   client.user?.setActivity({
     name: "Watching incoming results | Run /channel to set result feed.",
   });
+
+  Bun.cron("*/5 * * * *", async () => {
+    console.log("Minute timer firing");
+    await Promise.all([runDC(database, client), runBBC(database, client)]);
+  });
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -117,11 +122,6 @@ client.on(Events.InteractionCreate, async (interaction) => {
       });
     }
   }
-});
-
-Bun.cron("* * * * *", async () => {
-  console.log("Minute timer firing");
-  await Promise.all([runDC(database, client), runBBC(database, client)]);
 });
 
 // Bun.cron("*/10 * * * 1,2,3", async () => {
